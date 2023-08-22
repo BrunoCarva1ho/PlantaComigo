@@ -2,8 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:plantecomigo/view/storage_page.dart';
-
+import 'package:plantecomigo/view/login_screen.dart';
 import 'view/error_page.dart';
 import 'view/loading_page.dart';
 import 'controller/firebase_options.dart';
@@ -12,12 +11,9 @@ import 'controller/firebase_options.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //await Firebase.initializeApp(
-  //  options: DefaultFirebaseOptions.currentPlatform,
-  //);
-
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
 
@@ -33,14 +29,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Firebase Storage',
       theme: ThemeData(
-        primarySwatch: Colors.green,
-        brightness: Brightness.light,
+        primarySwatch: Colors.lightGreen,
       ),
       home: FutureBuilder(
         future: _inicializacao,
         builder: (context, app){
           if(app.connectionState == ConnectionState.done){
-            return const StoragePage();
+            return LoginScreen();
           }
 
           if(app.hasError) return const ErrorPage();

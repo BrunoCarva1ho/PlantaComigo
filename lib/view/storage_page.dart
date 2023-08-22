@@ -4,13 +4,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:plantecomigo/view/profile.dart';
 import 'package:plantecomigo/view/publish_form.dart';
 
+import '../model/db.dart';
+
 class StoragePage extends StatefulWidget {
-  const StoragePage({Key? key}) : super(key: key);
+
+  int id;
+
+  StoragePage({Key? key, required this.id}) : super(key:key);
 
   @override
-  _StoragePageState createState() => _StoragePageState();
+  _StoragePageState createState() => _StoragePageState(id: id);
 }
 
 class _StoragePageState extends State<StoragePage> {
@@ -47,12 +53,32 @@ class _StoragePageState extends State<StoragePage> {
     return image;
   }
 
+
+  List<Map<String, dynamic>> _dataUser = [];
+
+  Future<String> _refreshData(int id) async {
+    final data = await SQLUser.getSingleData(id);
+    _dataUser = data;
+    String nome = _dataUser[0]['nome'];
+    String contato = _dataUser[0]['contato'];
+    
+    return 'Usuário: $nome -      Contato(WhatsApp): $contato';
+  }
+  
+  
+  int id;
+  //Construtor
+  _StoragePageState({required this.id});
+
   Future<UploadTask> upload(String path) async {
     File file = File(path);
 
     try {
-      String ref = 'images/img-${DateTime.now().toString()}.jpg';
+      String nome = await _refreshData(id);
+      String ref =  'images/img-   $nome-                 Data e hora da postagem: ${DateTime.now().toString()}.jpg';
+      
       return storage.ref(ref).putFile(file);
+
     } on FirebaseException catch (e) {
       throw Exception("Erro no upload: ${e.code}");
     }
@@ -91,6 +117,8 @@ class _StoragePageState extends State<StoragePage> {
     await storage.ref(refs[index].fullPath);
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +142,21 @@ class _StoragePageState extends State<StoragePage> {
                   )),
                 )
               : IconButton(
-                  icon: const Icon(Icons.upload),
+                  icon: const Icon(Icons.camera_alt),
                   onPressed: pickAndUploadImage,
                 ),
+            
+            IconButton(
+              onPressed: () {
+                Navigator.push<void>(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => ProfileScreen(id: id)
+                  ),
+                );
+              }, 
+            icon: Icon(Icons.account_circle_rounded))
+
         ],
         elevation: 0,
       ),

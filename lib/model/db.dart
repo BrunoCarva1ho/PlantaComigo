@@ -7,6 +7,7 @@ class SQLUser{
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         nome TEXT,
         senha TEXT,
+        email TEXT,
         contato TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
@@ -23,12 +24,13 @@ class SQLUser{
     );
   }
 
-  static Future<void> createData(String nome, String senha, String contato) async {
+  static Future<void> createData(String nome, String senha, String email, String contato) async {
     final db = await SQLUser.db();
 
-    final data = {'nome': nome, 'senha':senha, 'contato':contato};
+    final data = {'nome': nome, 'senha':senha, 'email':email, 'contato': contato};
     await db.insert('data', data, conflictAlgorithm: sql.ConflictAlgorithm.replace);
-    //print(data[id]);
+    // ignore: avoid_print
+    return print(db.query('data'));
   }
 
   static Future<List<Map<String, dynamic>>> getAllData() async{
@@ -48,5 +50,5 @@ class SQLUser{
       await db.delete('data', where: "id= ?", whereArgs: [id]);
     } catch(e) {}
   }
-  
+
 }

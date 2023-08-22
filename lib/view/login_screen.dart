@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:plantecomigo/model/db.dart';
 import 'package:plantecomigo/view/register_screen.dart';
 import 'package:plantecomigo/view/storage_page.dart';
 
@@ -11,10 +12,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen>{
+  
+  List<Map<String, dynamic>> _allData = [];
+
+
+
+  void _refreshData() async {
+    final data = await SQLUser.getAllData();
+    setState(() {
+      _allData = data;
+    });
+    
+  }
+  
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
 
@@ -30,12 +44,14 @@ class _LoginScreenState extends State<LoginScreen>{
         ),
         child: Column(children: [
           Padding(
+            
             padding: EdgeInsets.only(
               bottom: 0,
             ),
             child: Image.asset(
               "./assets/plantacomigo.png",
               height: 200,
+              
             ),
           ),
           Form(
@@ -97,20 +113,26 @@ class _LoginScreenState extends State<LoginScreen>{
             child: Text("Entrar"),
 
             //AUTENTICAÇÃO DO LOGIN
-            onPressed: () {
-              if (_emailController.text == 'bruno' && _senhaController.text == '123') {
-                _emailController.text = "";
-                _senhaController.text = "";
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => StoragePage(),
-                ));
-              } else {
+            onPressed: ()  async {
+                _refreshData();
+                
+                for(int i=1; i<_allData.length; i++){
+                  print(_allData[i]['email']);
+                  if(_allData[i]['email'] == _emailController.text && _allData[i]['senha'] == _senhaController.text){
+                    
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => StoragePage(id: _allData[i]['id']),
+                    ));
+                  }
+                
+                }
+
                 _emailController.text = "";
                 _senhaController.text = "";
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    backgroundColor: Color.fromARGB(255, 32, 139, 35),
+                    backgroundColor: Color.fromARGB(255, 255, 0, 0),
                     content: Text("Login Inválido")));
-              }
+              
             },
           )
         ]),

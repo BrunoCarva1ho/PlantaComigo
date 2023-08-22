@@ -15,7 +15,7 @@ class SQLUser{
 
   static Future<sql.Database> db() async{
     return sql.openDatabase(
-      "database_name.db",
+      "database_user.db",
       version: 1,
       onCreate: (sql.Database database, int version) async{
         await createTables(database);

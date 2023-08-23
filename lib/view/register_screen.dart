@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, use_build_context_synchronously, unrelated_type_equality_checks
 
 import 'package:flutter/material.dart';
 import 'package:plantecomigo/model/db.dart';
@@ -12,14 +12,15 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreen extends State<RegisterScreen> {
 
+   
 
   Future<void> _updateData(int id) async {
-    await SQLUser.createData(_nome_Controller.text, _email_Controller.text,
+    await instance.createData(_nome_Controller.text, _email_Controller.text,
         _contato_Controller.text, _senha_Controller.text);
   }
 
   Future<void> _addData() async {
-    await SQLUser.createData(_nome_Controller.text, _senha_Controller.text,
+    await instance.createData(_nome_Controller.text, _senha_Controller.text,
         _email_Controller.text, _contato_Controller.text);
     
   }
@@ -144,27 +145,6 @@ class _RegisterScreen extends State<RegisterScreen> {
               ),
             )),
       ),
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  final String label;
-  final String controller;
-  const CustomTextField(
-      {Key? key, required this.label, required this.controller})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      validator: (text) {
-        if (text == null || text.isEmpty) {
-          return 'Preencha este campo!';
-        } else {}
-      },
-      decoration:
-          InputDecoration(labelText: label, border: OutlineInputBorder()),
     );
   }
 }

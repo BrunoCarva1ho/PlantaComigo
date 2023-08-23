@@ -1,6 +1,18 @@
 import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLUser{
+
+
+  //Implantação Singleton
+  SQLUser._privateConstructor();
+
+  static final SQLUser _instance = SQLUser._privateConstructor();
+
+  static SQLUser get instance { 
+    return _instance; 
+  }
+
+  
   static Future<void> createTables(sql.Database database) async{
     await database.execute("""
       CREATE TABLE data(
@@ -14,6 +26,7 @@ class SQLUser{
     """);
   }
 
+
   static Future<sql.Database> db() async{
     return sql.openDatabase(
       "database_user.db",
@@ -24,7 +37,7 @@ class SQLUser{
     );
   }
 
-  static Future<void> createData(String nome, String senha, String email, String contato) async {
+  Future<void> createData(String nome, String senha, String email, String contato) async {
     final db = await SQLUser.db();
 
     final data = {'nome': nome, 'senha':senha, 'email':email, 'contato': contato};
@@ -33,18 +46,19 @@ class SQLUser{
     return print(db.query('data'));
   }
 
-  static Future<List<Map<String, dynamic>>> getAllData() async{
+  Future<List<Map<String, dynamic>>> getAllData() async{
     final db = await SQLUser.db();
+    
     return db.query('data', orderBy: 'id');
   }
   
-  static Future<List<Map<String, dynamic>>> getSingleData(int id) async{
+  Future<List<Map<String, dynamic>>> getSingleData(int id) async{
     final db = await SQLUser.db();
     
     return db.query('data', where: "id = ?", whereArgs: [id], limit: 1);
   }
 
-  static Future<void> deleteData(int id) async{
+  Future<void> deleteData(int id) async{
     final db = await SQLUser.db();
     try{
       await db.delete('data', where: "id= ?", whereArgs: [id]);

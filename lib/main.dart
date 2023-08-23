@@ -23,12 +23,15 @@ class MyApp extends StatelessWidget {
 
   MyApp({super.key});
 
-  // This widget is the root of your application.
+  //Chamada da classe Singleton
+  final themeStore = ThemeStore.instance;
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Firebase Storage',
-      theme: ThemeData(
+      title: 'Planta Comigo',
+      darkTheme: ThemeData(
         primarySwatch: Colors.lightGreen,
       ),
       home: FutureBuilder(
@@ -44,5 +47,21 @@ class MyApp extends StatelessWidget {
         },
       )
     );
+  }
+}
+
+
+//Padrão de Projeto Singleton
+class ThemeStore extends ChangeNotifier{
+  static ThemeStore instance = ThemeStore();
+
+  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode get themeMode => _themeMode;
+
+  bool get isDartTheme => _themeMode == ThemeMode.dark;
+
+  switchTheme(){
+    _themeMode = isDartTheme ? ThemeMode.light : ThemeMode.dark;
+    notifyListeners();
   }
 }

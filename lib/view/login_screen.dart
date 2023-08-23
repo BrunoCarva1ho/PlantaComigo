@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:plantecomigo/model/db.dart';
@@ -6,6 +6,7 @@ import 'package:plantecomigo/view/register_screen.dart';
 import 'package:plantecomigo/view/storage_page.dart';
 
 class LoginScreen extends StatefulWidget {
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 
@@ -15,14 +16,16 @@ class _LoginScreenState extends State<LoginScreen>{
   
   List<Map<String, dynamic>> _allData = [];
 
-
+  _LoginScreenState(){
+    _refreshData();
+  }
+  
 
   void _refreshData() async {
-    final data = await SQLUser.getAllData();
+    final data = await instance.getAllData();
     setState(() {
       _allData = data;
     });
-    
   }
   
 
@@ -114,24 +117,26 @@ class _LoginScreenState extends State<LoginScreen>{
 
             //AUTENTICAÇÃO DO LOGIN
             onPressed: ()  async {
+                bool login = false;
                 _refreshData();
                 
                 for(int i=1; i<_allData.length; i++){
                   print(_allData[i]['email']);
                   if(_allData[i]['email'] == _emailController.text && _allData[i]['senha'] == _senhaController.text){
-                    
+                    login=true;
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => StoragePage(id: _allData[i]['id']),
                     ));
                   }
                 
                 }
-
-                _emailController.text = "";
-                _senhaController.text = "";
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    backgroundColor: Color.fromARGB(255, 255, 0, 0),
-                    content: Text("Login Inválido")));
+                if(login==false){
+                  _emailController.text = "";
+                  _senhaController.text = "";
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Color.fromARGB(255, 255, 0, 0),
+                      content: Text("Login Inválido")));
+                }
               
             },
           )

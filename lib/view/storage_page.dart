@@ -5,19 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:plantecomigo/view/profile.dart';
-import 'package:plantecomigo/view/publish_form.dart';
-
 import '../model/db.dart';
+
+
+final instance = SQLUser.instance;
+
 
 class StoragePage extends StatefulWidget {
 
   int id;
-
-  StoragePage({Key? key, required this.id}) : super(key:key);
+  bool? load;
+  
+  StoragePage({Key? key, required this.id, this.load}) : super(key:key);
 
   @override
-  _StoragePageState createState() => _StoragePageState(id: id);
+  _StoragePageState createState() => _StoragePageState(id: id, load: load);
 }
+
 
 class _StoragePageState extends State<StoragePage> {
   bool uploading = false;
@@ -25,6 +29,7 @@ class _StoragePageState extends State<StoragePage> {
   List<Reference> refs = [];
   List<String> arquivos = [];
   bool loading = true;
+
 
   @override
   void initState() {
@@ -49,15 +54,19 @@ class _StoragePageState extends State<StoragePage> {
   Future<XFile?> getImage() async {
     final ImagePicker _picker = ImagePicker();
     XFile? image =
-        await _picker.pickImage(source: ImageSource.camera); //ou camera
+        await _picker.pickImage(source: ImageSource.camera); //ou galeria
     return image;
   }
 
 
   List<Map<String, dynamic>> _dataUser = [];
 
+
+  
+  
+
   Future<String> _refreshData(int id) async {
-    final data = await SQLUser.getSingleData(id);
+    final data = await instance.getSingleData(id);
     _dataUser = data;
     String nome = _dataUser[0]['nome'];
     String contato = _dataUser[0]['contato'];
@@ -67,8 +76,9 @@ class _StoragePageState extends State<StoragePage> {
   
   
   int id;
+  bool? load;
   //Construtor
-  _StoragePageState({required this.id});
+  _StoragePageState({required this.id, this.load});
 
   Future<UploadTask> upload(String path) async {
     File file = File(path);
@@ -126,7 +136,7 @@ class _StoragePageState extends State<StoragePage> {
         centerTitle: true,
         title: uploading
             ? Text('${total.round()}% enviado')
-            : const Text('Plante Comigo'),
+            : const Text('Planta Comigo'),
         actions: [
           uploading
               ? const Padding(
@@ -192,25 +202,14 @@ class _StoragePageState extends State<StoragePage> {
                                       child: Text('Negociar troca!'),
                                       onPressed: () => negociarPlanta(index),
                                     ),
-                                  ]));
+                                  ])
+                              );
                         }else{
                           return Column();
                         }
                       },
                       itemCount: arquivos.length,
                     )),
-      floatingActionButton: ElevatedButton(
-        child: Text('Publicar'),
-        onPressed: () {
-          Navigator.push<void>(
-            context,
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) => Publish(),
-            ),
-          );
-        },
-        style: ButtonStyle(),
-      ),
     );
   }
 }

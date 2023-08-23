@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:plantecomigo/view/profile.dart';
 import '../model/db.dart';
 
-
+//Instancia única da classe SQLUser
 final instance = SQLUser.instance;
 
 

@@ -2,8 +2,7 @@ import 'package:sqflite/sqflite.dart' as sql;
 
 class SQLUser{
 
-
-  //Implantação Singleton
+  //Implementação Singleton
   SQLUser._privateConstructor();
 
   static final SQLUser _instance = SQLUser._privateConstructor();

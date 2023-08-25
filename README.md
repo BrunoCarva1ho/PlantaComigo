@@ -1,5 +1,5 @@
-# PlanteComigo
+# PlantaComigo
 Aplicativo(Rede Social) para troca de plantas.
 
-<h3>Tela para escolher foto/imagem da publicação</h3>
-<img src="./preview/publicar_screen.png" width="250px">
+<h2>Login Page</h2>
+<img src="./preview/login.png" width="250px">
